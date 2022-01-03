@@ -5,7 +5,7 @@ contract LinkdropStorage {
     // Address of owner deploying this contract (usually factory)
     address public owner;
 
-    // Address corresponding to linkdrop master key
+    /* // Address corresponding to linkdrop master key */
     address payable public linkdropMaster;
 
     // Version of mastercopy contract
@@ -14,8 +14,8 @@ contract LinkdropStorage {
     // Network id
     uint public chainId;
 
-    // Indicates whether an address corresponds to linkdrop signing key
-    mapping (address => bool) public isLinkdropSigner;
+    /* // Indicates whether an address corresponds to linkdrop signing key */
+    /* mapping (address => bool) public isLinkdropSigner; */
 
     // Indicates who the link is claimed to
     mapping (address => address) public claimedTo;

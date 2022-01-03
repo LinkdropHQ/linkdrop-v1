@@ -47,7 +47,7 @@ contract LinkdropERC721 is ILinkdropERC721, LinkdropCommon {
             )
         );
         address signer = ECDSA.recover(prefixedHash, _signature);
-        return isLinkdropSigner[signer];
+        return isLinkdropSigner(signer);
     }
 
     /**

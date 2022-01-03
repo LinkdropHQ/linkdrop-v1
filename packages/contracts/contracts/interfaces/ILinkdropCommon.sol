@@ -10,7 +10,7 @@ interface ILinkdropCommon {
         uint _chainId
     )
     external returns (bool);
-
+    function isLinkdropSigner (address _signer) external view returns (bool);
     function isClaimedLink(address _linkId) external view returns (bool);
     function isCanceledLink(address _linkId) external view returns (bool);
     function paused() external view returns (bool);

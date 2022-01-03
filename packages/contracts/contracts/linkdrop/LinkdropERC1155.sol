@@ -50,7 +50,7 @@ contract LinkdropERC1155 is ILinkdropERC1155, LinkdropCommon {
             )
         );
         address signer = ECDSA.recover(prefixedHash, _signature);
-        return isLinkdropSigner[signer];
+        return isLinkdropSigner(signer);
     }
 
 

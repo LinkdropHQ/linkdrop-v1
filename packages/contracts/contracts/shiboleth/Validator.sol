@@ -5,6 +5,9 @@ import "openzeppelin-solidity/contracts/cryptography/ECDSA.sol";
 
 interface IValidator {
   function claim(address beneficiary, bytes memory data, bytes memory authsig, bytes memory claimsig) external;
+  /* function addIssuer (address _issuer) internal; */
+  /* function removeIssuer (address _issuer) internal; */
+  function isIssuer (address _issuer) external view returns (bool);
   /* function checkData(address beneficiary, bytes memory data) internal; */
   /* function takeClaimAction(address beneficiary, bytes memory data) internal; */
 }
@@ -12,6 +15,19 @@ interface IValidator {
 
 contract Validator is IValidator {
     mapping(address=>bool) issuers;
+
+
+    function addIssuer (address _issuer) internal {
+      issuers[_issuer] = true;
+    }
+
+    function removeIssuer (address _issuer) internal {
+      issuers[_issuer] = false;
+    }
+
+    function isIssuer (address _issuer) public view override returns (bool) {
+      return issuers[_issuer];
+    }
     
     function claim(address beneficiary, bytes memory data, bytes memory authsig, bytes memory claimsig) external override {
 
@@ -47,5 +63,7 @@ contract Validator is IValidator {
               
       require(issuers[issuer], "Issuer is not authorized");
       //Conduct checks on `data` here, and take action if they pass.
+      require(1 == 2, "Not Implemented");
+
     }
 }

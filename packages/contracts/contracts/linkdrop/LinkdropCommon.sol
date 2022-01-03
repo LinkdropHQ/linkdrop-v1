@@ -30,7 +30,8 @@ contract LinkdropCommon is Validator, ILinkdropCommon, LinkdropStorage {
         require(!initialized, "LINKDROP_PROXY_CONTRACT_ALREADY_INITIALIZED");
         owner = _owner;
         linkdropMaster = _linkdropMaster;
-        isLinkdropSigner[linkdropMaster] = true;
+        addIssuer(_linkdropMaster);        
+        /* isLinkdropSigner[linkdropMaster] = true; */
         version = _version;
         chainId = _chainId;
         initialized = true;
@@ -38,12 +39,12 @@ contract LinkdropCommon is Validator, ILinkdropCommon, LinkdropStorage {
     }
 
     modifier onlyLinkdropMaster() {
-        require(msg.sender == linkdropMaster, "ONLY_LINKDROP_MASTER");
+      require(msg.sender == linkdropMaster, "ONLY_LINKDROP_MASTER");
         _;
     }
 
     modifier onlyLinkdropMasterOrFactory() {
-        require (msg.sender == linkdropMaster || msg.sender == owner, "ONLY_LINKDROP_MASTER_OR_FACTORY");
+      require (msg.sender == linkdropMaster || msg.sender == owner, "ONLY_LINKDROP_MASTER_OR_FACTORY");
         _;
     }
 
@@ -57,6 +58,12 @@ contract LinkdropCommon is Validator, ILinkdropCommon, LinkdropStorage {
         _;
     }
 
+    /* // Indicates whether an address corresponds to linkdrop signing key */
+    function isLinkdropSigner (address _signer) public view override returns (bool) {
+      return isIssuer(_signer);
+    }
+
+    
     /**
     * @dev Indicates whether a link is claimed or not
     * @param _linkId Address corresponding to link key
@@ -132,8 +139,9 @@ contract LinkdropCommon is Validator, ILinkdropCommon, LinkdropStorage {
     */
     function addSigner(address _linkdropSigner) external override payable onlyLinkdropMasterOrFactory returns (bool) {
         require(_linkdropSigner != address(0), "INVALID_LINKDROP_SIGNER_ADDRESS");
-        isLinkdropSigner[_linkdropSigner] = true;
-        return true;
+        /* isLinkdropSigner[_linkdropSigner] = true; */
+      addIssuer(_linkdropSigner);
+      return true;
     }
 
     /**
@@ -143,7 +151,7 @@ contract LinkdropCommon is Validator, ILinkdropCommon, LinkdropStorage {
     */
     function removeSigner(address _linkdropSigner) external override onlyLinkdropMaster returns (bool) {
         require(_linkdropSigner != address(0), "INVALID_LINKDROP_SIGNER_ADDRESS");
-        isLinkdropSigner[_linkdropSigner] = false;
+        removeIssuer(_linkdropSigner);
         return true;
     }
 

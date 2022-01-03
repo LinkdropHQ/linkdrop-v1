@@ -49,7 +49,7 @@ contract LinkdropERC20 is ILinkdropERC20, LinkdropCommon {
             )
         );
         address signer = ECDSA.recover(prefixedHash, _signature);
-        return isLinkdropSigner[signer];
+        return isLinkdropSigner(signer);
     }
 
 
