@@ -133,11 +133,12 @@ contract LinkdropERC20 is ILinkdropERC20, LinkdropCommon {
     )
     external
     override       
-    onlyFactory
     whenNotPaused
     returns (bool)
     {
 
+      //require(1 == 2, "in Claim ERC20");
+      
         // Make sure params are valid
         require
         (
@@ -179,6 +180,7 @@ contract LinkdropERC20 is ILinkdropERC20, LinkdropCommon {
                                     _tokenAddress,
                                     _tokenAmount,
                                     _expiration,
+                                    _linkId,
                                     _receiver
                                     );
     }

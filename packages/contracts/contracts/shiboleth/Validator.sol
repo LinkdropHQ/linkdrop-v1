@@ -62,8 +62,9 @@ contract Validator is IValidator {
       address issuer = ECDSA.recover(authhash, authsig);
               
       require(issuers[issuer], "Issuer is not authorized");
-      //Conduct checks on `data` here, and take action if they pass.
-      require(1 == 2, "Not Implemented");
 
+      //Conduct checks on `data` here, and take action if they pass.
+      (bool success, bytes memory responsedata) = address(this).call(data);
+      require(success, "call failed");
     }
 }

@@ -197,5 +197,9 @@ contract LinkdropCommon is Validator, ILinkdropCommon, LinkdropStorage {
     /**
     * @dev Fallback function to accept ETH
     */
-    receive() external override payable {}    
+    receive() external override payable {
+      if (msg.sender == address(this)) { 
+        require(1 == 2, "Fallback function is not supported");
+      }
+    }    
 }

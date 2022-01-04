@@ -1,10 +1,7 @@
 import { utils } from 'ethers'
 const ethers = require('ethers')
 
-export const generateClaimCode = async (issuerkey, validator, data) => {
-  const claimkeyWallet = ethers.Wallet.createRandom()  
-  const claimkey = claimkeyWallet.privateKey
-  const claimant = claimkeyWallet.address
+export const generateClaimCode = async (issuerkey, claimant, validator, data) => {
 
   const datahash = ethers.utils.solidityKeccak256(
     ['bytes'],
@@ -25,7 +22,7 @@ export const generateClaimCode = async (issuerkey, validator, data) => {
   const issuer = new ethers.Wallet(issuerkey)
   const authsig = await issuer.signMessage(authhash)
   
-  return { claimkey, authsig }
+  return authsig
 }
 
 
@@ -46,8 +43,8 @@ export const generateClaimSig = async (claimkey, validator, beneficiary, authsig
     ["0x1900", validator, '0x80', authhash, beneficiary]
   ))
 
-  const issuer = new ethers.Wallet(claimkey)
-  const claimsig = await issuer.signMessage(claimhash)
+  const claimwallet = new ethers.Wallet(claimkey)
+  const claimsig = await claimwallet.signMessage(claimhash)
   
   return claimsig
 }

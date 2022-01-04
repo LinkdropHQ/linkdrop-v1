@@ -90,7 +90,6 @@ describe('ETH/ERC20 linkdrop tests', () => {
     expect(factory.address).to.not.eq(ethers.constants.AddressZero)
     let version = await factory.masterCopyVersion()
     expect(version).to.eq(1)
-
   })
 
   it('should deploy proxy and delegate to implementation', async () => {
@@ -104,6 +103,7 @@ describe('ETH/ERC20 linkdrop tests', () => {
 
     await expect(
       factory.deployProxy(campaignId, {
+        value: ethers.utils.parseEther('2'),
         gasLimit: 6000000
       })
     ).to.emit(factory, 'Deployed')
@@ -126,10 +126,10 @@ describe('ETH/ERC20 linkdrop tests', () => {
     let owner = await proxy.owner()
     expect(owner).to.eq(factory.address)
 
-    await linkdropMaster.sendTransaction({
-      to: proxy.address,
-      value: ethers.utils.parseEther('2')
-    })
+    // await linkdropMaster.sendTransaction({
+    //   to: proxy.address,
+    //   value: ethers.utils.parseEther('2')
+    // })
   })
 
   it('linkdropMaster should be able to add new signing keys', async () => {
@@ -468,14 +468,27 @@ describe('ETH/ERC20 linkdrop tests', () => {
     // Approving tokens from linkdropMaster to Linkdrop Contract
     await tokenInstance.approve(proxy.address, tokenAmount)
 
-    const data = '0x1'
+    // const data = '0x1'
+    const claimkeyWallet = ethers.Wallet.createRandom()
+    const claimkey = claimkeyWallet.privateKey
+    const claimant = claimkeyWallet.address
+
     const issuerkey = linkdropMaster.privateKey
     const validator = proxy.address
-    const beneficiary = '0x914926e0640779e199FeAb065814BECa35F66d6D' //receiverAddress
-    const { claimkey, authsig } = await generateClaimCode(issuerkey, validator, data)
+    const beneficiary = receiverAddress
+    const data = await proxy.encodeClaimERC20(
+      weiAmount,
+      tokenInstance.address,
+      tokenAmount,
+      expirationTime,
+      claimant,
+      beneficiary
+    )
+    
+    
+    const authsig = await generateClaimCode(issuerkey, claimant, validator, data)    
     const claimsig = await generateClaimSig(claimkey, validator, beneficiary, authsig)
 
-    
     
     // link = await createLink(
     //   linkdropSigner,
@@ -491,9 +504,9 @@ describe('ETH/ERC20 linkdrop tests', () => {
     // receiverAddress = ethers.Wallet.createRandom().address
     // receiverSignature = await signReceiverAddress(link.linkKey, receiverAddress)
 
-    // let approverBalanceBefore = await tokenInstance.balanceOf(
-    //   linkdropMaster.address
-    // )
+    const approverBalanceBefore = await tokenInstance.balanceOf(
+      linkdropMaster.address
+    )
 
     // await factory.claim(
     //   weiAmount,
@@ -517,14 +530,32 @@ describe('ETH/ERC20 linkdrop tests', () => {
     
     await proxy.claim(beneficiary, data, authsig, claimsig, { gasLimit: 800000 })
 
+    // let txData = {
+    //   to: proxy.address,
+    //   data,
+    //   value: weiAmount
+    // }
+    // const tx = await linkdropMaster.sendTransaction(txData)
+
+    // const tx = await proxy.claimERC20(
+    //   weiAmount,
+    //   tokenInstance.address,
+    //   tokenAmount,
+    //   expirationTime,
+    //   claimant,
+    //   beneficiary
+    // )
     
-    let approverBalanceAfter = await tokenInstance.balanceOf(
+    // console.log({ tx })
+    
+    const approverBalanceAfter = await tokenInstance.balanceOf(
       linkdropMaster.address
     )
     expect(approverBalanceAfter).to.eq(approverBalanceBefore.sub(tokenAmount))
 
-    let receiverTokenBalance = await tokenInstance.balanceOf(receiverAddress)
+    const receiverTokenBalance = await tokenInstance.balanceOf(receiverAddress)
     expect(receiverTokenBalance).to.eq(tokenAmount)
+    console.log("all checks passed")
   })
 
 
