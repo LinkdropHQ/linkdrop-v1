@@ -49,9 +49,7 @@ contract LinkdropFactoryERC20 is ILinkdropFactoryERC20, LinkdropFactoryCommon {
             _tokenAmount,
             _expiration,
             _linkId,
-            _linkdropSignerSignature,
-            _receiver,
-            _receiverSignature
+            _receiver
         );
     }
 
@@ -97,9 +95,7 @@ contract LinkdropFactoryERC20 is ILinkdropFactoryERC20, LinkdropFactoryCommon {
             _tokenAmount,
             _expiration,
             _linkId,
-            _linkdropSignerSignature,
-            _receiver,
-            _receiverSignature
+            _receiver
         );
 
         return true;
