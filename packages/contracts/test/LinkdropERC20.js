@@ -189,17 +189,13 @@ describe('ETH/ERC20 linkdrop tests', () => {
     receiverSignature = await signReceiverAddress(link.linkKey, receiverAddress)
 
     await expect(
-      factory.checkClaimParams(
+      proxy.checkClaimParams(
         weiAmount,
         tokenAddress,
         tokenAmount,
         expirationTime,
         link.linkId,
-        linkdropMaster.address,
-        campaignId,
-        link.linkdropSignerSignature,
-        receiverAddress,
-        receiverSignature
+        receiverAddress
       )
     ).to.be.revertedWith('INSUFFICIENT_ALLOWANCE')
   })
@@ -489,38 +485,9 @@ describe('ETH/ERC20 linkdrop tests', () => {
     const authsig = await generateClaimCode(issuerkey, claimant, validator, data)    
     const claimsig = await generateClaimSig(claimkey, validator, beneficiary, authsig)
 
-    
-    // link = await createLink(
-    //   linkdropSigner,
-    //   weiAmount,
-    //   tokenAddress,
-    //   tokenAmount,
-    //   expirationTime,
-    //   version,
-    //   chainId,
-    //   proxyAddress
-    // )
-
-    // receiverAddress = ethers.Wallet.createRandom().address
-    // receiverSignature = await signReceiverAddress(link.linkKey, receiverAddress)
-
     const approverBalanceBefore = await tokenInstance.balanceOf(
       linkdropMaster.address
     )
-
-    // await factory.claim(
-    //   weiAmount,
-    //   tokenAddress,
-    //   tokenAmount,
-    //   expirationTime,
-    //   link.linkId,
-    //   linkdropMaster.address,
-    //   campaignId,
-    //   link.linkdropSignerSignature,
-    //   receiverAddress,
-    //   receiverSignature,
-    //   { gasLimit: 800000 }
-    // )
     console.log({
       beneficiary,
       data,
@@ -529,24 +496,6 @@ describe('ETH/ERC20 linkdrop tests', () => {
     })
     
     await proxy.claim(beneficiary, data, authsig, claimsig, { gasLimit: 800000 })
-
-    // let txData = {
-    //   to: proxy.address,
-    //   data,
-    //   value: weiAmount
-    // }
-    // const tx = await linkdropMaster.sendTransaction(txData)
-
-    // const tx = await proxy.claimERC20(
-    //   weiAmount,
-    //   tokenInstance.address,
-    //   tokenAmount,
-    //   expirationTime,
-    //   claimant,
-    //   beneficiary
-    // )
-    
-    // console.log({ tx })
     
     const approverBalanceAfter = await tokenInstance.balanceOf(
       linkdropMaster.address

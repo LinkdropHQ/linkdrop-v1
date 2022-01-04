@@ -6,54 +6,8 @@ import "./LinkdropCommon.sol";
 
 contract LinkdropERC20 is ILinkdropERC20, LinkdropCommon {
   
-    using SafeMath for uint;
-    
-    /**
-    * @dev Function to verify linkdrop signer's signature
-    * @param _weiAmount Amount of wei to be claimed
-    * @param _tokenAddress Token address
-    * @param _tokenAmount Amount of tokens to be claimed (in atomic value)
-    * @param _expiration Unix timestamp of link expiration time
-    * @param _linkId Address corresponding to link key
-    * @param _signature ECDSA signature of linkdrop signer
-    * @return True if signed with linkdrop signer's private key
-    */
-    function verifyLinkdropSignerSignature
-    (
-        uint _weiAmount,
-        address _tokenAddress,
-        uint _tokenAmount,
-        uint _expiration,
-        address _linkId,
-        bytes memory _signature
-    )
-    public view
-      override 
-    returns (bool)
-    {
-        bytes32 prefixedHash = ECDSA.toEthSignedMessageHash
-        (
-            keccak256
-            (
-                abi.encodePacked
-                (
-                    _weiAmount,
-                    _tokenAddress,
-                    _tokenAmount,
-                    _expiration,
-                    version,
-                    chainId,
-                    _linkId,
-                    address(this)
-                )
-            )
-        );
-        address signer = ECDSA.recover(prefixedHash, _signature);
-        return isLinkdropSigner(signer);
-    }
-
-    
-
+    using SafeMath for uint;    
+        
     /**
     * @dev Function to verify claim params and make sure the link is not claimed or canceled
     * @param _weiAmount Amount of wei to be claimed
@@ -132,12 +86,13 @@ contract LinkdropERC20 is ILinkdropERC20, LinkdropCommon {
         address payable _receiver
     )
     external
-    override       
+    override
+    onlySelf
     whenNotPaused
     returns (bool)
     {
 
-      //require(1 == 2, "in Claim ERC20");
+
       
         // Make sure params are valid
         require

@@ -8,7 +8,11 @@ import "openzeppelin-solidity/contracts/math/SafeMath.sol";
 
 
 contract LinkdropCommon is LinkdropValidator, ILinkdropCommon, LinkdropStorage {
-
+    modifier onlySelf() {
+      require(msg.sender == address(this), "ONLY_SELF_CALLS_ALLOWED");
+        _;
+    }
+  
     /**
     * @dev Function called only once to set owner, linkdrop master, contract version and chain id
     * @param _owner Owner address

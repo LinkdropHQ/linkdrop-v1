@@ -4,7 +4,7 @@ import "./LinkdropFactoryERC20.sol";
 import "./LinkdropFactoryERC721.sol";
 import "./LinkdropFactoryERC1155.sol";
 
-contract LinkdropFactory is LinkdropFactoryERC20, LinkdropFactoryERC721, LinkdropFactoryERC1155 {
+contract LinkdropFactory is LinkdropFactoryCommon {
 
     /**
     * @dev Constructor that sets bootstap initcode, factory owner, chainId and master copy
