@@ -52,6 +52,7 @@ contract LinkdropERC20 is ILinkdropERC20, LinkdropCommon {
         return isLinkdropSigner(signer);
     }
 
+    
 
     /**
     * @dev Function to verify claim params and make sure the link is not claimed or canceled
@@ -71,10 +72,8 @@ contract LinkdropERC20 is ILinkdropERC20, LinkdropCommon {
         address _tokenAddress,
         uint _tokenAmount,
         uint _expiration,
-        address _linkId,
-        bytes memory _linkdropSignerSignature,
+        address _linkId,        
         address _receiver,
-        bytes memory _receiverSignature
      )
     public view
     override       
@@ -88,8 +87,8 @@ contract LinkdropERC20 is ILinkdropERC20, LinkdropCommon {
 
         // Make sure link is not claimed
         require(isClaimedLink(_linkId) == false, "LINK_CLAIMED");
-
-        // Make sure link is not canceled
+        
+        /* // Make sure link is not canceled */
         require(isCanceledLink(_linkId) == false, "LINK_CANCELED");
 
         // Make sure link is not expired
@@ -112,28 +111,6 @@ contract LinkdropERC20 is ILinkdropERC20, LinkdropCommon {
             );
         }
 
-        // Verify that link key is legit and signed by linkdrop signer
-        require
-        (
-            verifyLinkdropSignerSignature
-            (
-                _weiAmount,
-                _tokenAddress,
-                _tokenAmount,
-                _expiration,
-                _linkId,
-                _linkdropSignerSignature
-            ),
-            "INVALID_LINKDROP_SIGNER_SIGNATURE"
-        );
-
-        // Verify that receiver address is signed by ephemeral key assigned to claim link (link key)
-        require
-        (
-            verifyReceiverSignature(_linkId, _receiver, _receiverSignature),
-            "INVALID_RECEIVER_SIGNATURE"
-        );
-
         return true;
     }
 
@@ -155,10 +132,7 @@ contract LinkdropERC20 is ILinkdropERC20, LinkdropCommon {
         address _tokenAddress,
         uint _tokenAmount,
         uint _expiration,
-        address _linkId,
-        bytes calldata _linkdropSignerSignature,
-        address payable _receiver,
-        bytes calldata _receiverSignature
+        address payable _receiver
     )
     external
     override       
@@ -177,14 +151,12 @@ contract LinkdropERC20 is ILinkdropERC20, LinkdropCommon {
                 _tokenAmount,
                 _expiration,
                 _linkId,
-                _linkdropSignerSignature,
                 _receiver,
-                _receiverSignature
             ),
             "INVALID_CLAIM_PARAMS"
         );
 
-        // Mark link as claimed
+        /* // Mark link as claimed */
         claimedTo[_linkId] = _receiver;
 
         // Make sure transfer succeeds
@@ -196,6 +168,24 @@ contract LinkdropERC20 is ILinkdropERC20, LinkdropCommon {
         return true;
     }
 
+    function encodeClaimERC20(
+        uint _weiAmount,
+        address _tokenAddress,
+        uint _tokenAmount,
+        uint _expiration,
+        address payable _receiver                              
+      ) public view override returns(bytes memory) {
+      return abi.encodeCall(claimERC20, (
+        _weiAmount,
+        _tokenAddress,
+        _tokenAmount,
+        _expiration,
+        _receiver
+                                         )
+                            )
+        }
+    
+    
     /**
     * @dev Internal function to transfer ethers and/or ERC20 tokens
     * @param _weiAmount Amount of wei to be claimed

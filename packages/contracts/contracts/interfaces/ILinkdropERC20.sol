@@ -39,4 +39,12 @@ interface ILinkdropERC20 {
     )
     external returns (bool);
 
+    function encodeClaimERC20(
+        uint _weiAmount,
+        address _tokenAddress,
+        uint _tokenAmount,
+        uint _expiration,
+        address payable _receiver                              
+      ) public view override returns(bytes memory)
+    
 }
