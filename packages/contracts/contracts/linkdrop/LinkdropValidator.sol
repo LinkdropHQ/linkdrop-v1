@@ -1,19 +1,10 @@
 //SPDX-License-Identifier: MIT
 pragma solidity >=0.6.0 <0.8.0;
+import "../interfaces/IValidator.sol";
 import "openzeppelin-solidity/contracts/cryptography/ECDSA.sol";
 
 
-interface IValidator {
-  function claim(address beneficiary, bytes memory data, bytes memory authsig, bytes memory claimsig) external;
-  /* function addIssuer (address _issuer) internal; */
-  /* function removeIssuer (address _issuer) internal; */
-  function isIssuer (address _issuer) external view returns (bool);
-  /* function checkData(address beneficiary, bytes memory data) internal; */
-  /* function takeClaimAction(address beneficiary, bytes memory data) internal; */
-}
-
-
-contract Validator is IValidator {
+contract LinkdropValidator is IValidator {
     mapping(address=>bool) issuers;
 
 

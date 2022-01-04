@@ -2,12 +2,12 @@ pragma solidity >=0.6.0 <0.8.0;
 
 import "../interfaces/ILinkdropCommon.sol";
 import "../storage/LinkdropStorage.sol";
-import "../shiboleth/Validator.sol";
+import "./LinkdropValidator.sol";
 import "openzeppelin-solidity/contracts/cryptography/ECDSA.sol";
 import "openzeppelin-solidity/contracts/math/SafeMath.sol";
 
 
-contract LinkdropCommon is Validator, ILinkdropCommon, LinkdropStorage {
+contract LinkdropCommon is LinkdropValidator, ILinkdropCommon, LinkdropStorage {
 
     /**
     * @dev Function called only once to set owner, linkdrop master, contract version and chain id
@@ -197,9 +197,5 @@ contract LinkdropCommon is Validator, ILinkdropCommon, LinkdropStorage {
     /**
     * @dev Fallback function to accept ETH
     */
-    receive() external override payable {
-      if (msg.sender == address(this)) { 
-        require(1 == 2, "Fallback function is not supported");
-      }
-    }    
+    receive() external override payable {}    
 }
