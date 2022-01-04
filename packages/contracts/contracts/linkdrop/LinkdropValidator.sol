@@ -51,11 +51,19 @@ contract LinkdropValidator is IValidator {
                                                        
         
       address issuer = ECDSA.recover(authhash, authsig);
-              
+      
       require(issuers[issuer], "Issuer is not authorized");
-
+      
       //Conduct checks on `data` here, and take action if they pass.
-      (bool success, bytes memory responsedata) = address(this).call(data);
-      require(success, "call failed");
+      bytes4 sig = data[0] |  bytes4(data[1]) >> 8 | bytes4(data[2]) >> 16  | bytes4(data[3]) >> 24;
+      require(sig == 0x91b025f6, "wrong sig");
+
+      // only pre-defined functions are allowed
+      if (sig == 0x91b025f6) { // claimERC20 selector
+        (bool success, bytes memory responsedata) = address(this).call(data);
+        require(success, "claim ERC20 failed");
+      } else {
+        revert("Unknown function!");
+      }
     }
 }
