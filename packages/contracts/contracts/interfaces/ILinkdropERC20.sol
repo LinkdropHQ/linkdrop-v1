@@ -20,9 +20,7 @@ interface ILinkdropERC20 {
         uint _tokenAmount,
         uint _expiration,
         address _linkId,
-        bytes calldata _linkdropSignerSignature,
-        address _receiver,
-        bytes calldata _receiverSignature
+        address _receiver
     )
     external view returns (bool);
 
@@ -33,9 +31,7 @@ interface ILinkdropERC20 {
         uint _tokenAmount,
         uint _expiration,
         address _linkId,
-        bytes calldata _linkdropSignerSignature,
-        address payable _receiver,
-        bytes calldata _receiverSignature
+        address payable _receiver
     )
     external returns (bool);
 
@@ -44,7 +40,8 @@ interface ILinkdropERC20 {
         address _tokenAddress,
         uint _tokenAmount,
         uint _expiration,
+        address _linkId,        
         address payable _receiver                              
-      ) public view override returns(bytes memory)
+                              ) external view returns(bytes memory);
     
 }

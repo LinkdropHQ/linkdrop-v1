@@ -73,7 +73,7 @@ contract LinkdropERC20 is ILinkdropERC20, LinkdropCommon {
         uint _tokenAmount,
         uint _expiration,
         address _linkId,        
-        address _receiver,
+        address _receiver
      )
     public view
     override       
@@ -132,6 +132,7 @@ contract LinkdropERC20 is ILinkdropERC20, LinkdropCommon {
         address _tokenAddress,
         uint _tokenAmount,
         uint _expiration,
+        address _linkId,
         address payable _receiver
     )
     external
@@ -151,7 +152,7 @@ contract LinkdropERC20 is ILinkdropERC20, LinkdropCommon {
                 _tokenAmount,
                 _expiration,
                 _linkId,
-                _receiver,
+                _receiver
             ),
             "INVALID_CLAIM_PARAMS"
         );
@@ -173,17 +174,18 @@ contract LinkdropERC20 is ILinkdropERC20, LinkdropCommon {
         address _tokenAddress,
         uint _tokenAmount,
         uint _expiration,
+        address _linkId,
         address payable _receiver                              
       ) public view override returns(bytes memory) {
-      return abi.encodeCall(claimERC20, (
-        _weiAmount,
-        _tokenAddress,
-        _tokenAmount,
-        _expiration,
-        _receiver
-                                         )
-                            )
-        }
+      return abi.encodeWithSelector(
+                                    LinkdropERC20.claimERC20.selector,
+                                    _weiAmount,
+                                    _tokenAddress,
+                                    _tokenAmount,
+                                    _expiration,
+                                    _receiver
+                                    );
+    }
     
     
     /**
